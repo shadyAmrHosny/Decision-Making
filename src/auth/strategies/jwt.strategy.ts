@@ -10,9 +10,13 @@ import { AuthService } from '../auth.service';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor( private authService: AuthService) {
     super({
-      jwtFromRequest: (req: Request) =>{
+
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: Request) =>{
         return req.session?.jwt || null;
       },
+        ExtractJwt.fromAuthHeaderAsBearerToken()
+        ]),
       ignoreExpiration: false,
       secretOrKey: jwtConstants.secret,
     });
