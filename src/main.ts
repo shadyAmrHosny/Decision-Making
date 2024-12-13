@@ -1,5 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import * as morgan from 'morgan';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -7,6 +9,9 @@ async function bootstrap() {
   app.enableCors({
     origin:'*'
   });
+
+  app.use(morgan('dev'));
+
 
   // Enable graceful shutdown
   app.enableShutdownHooks();
