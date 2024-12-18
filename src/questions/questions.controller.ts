@@ -3,20 +3,27 @@ import { NotFoundException } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dtos/create-question.dto';
 import { UpdateQuestionDto } from './dtos/update-question.dto';
-import { Question } from './question.entity';
+import { GetUser } from '../decorators/get-user.decrator';
+import { User } from '../users/user.entity';
+import { CreateQuestionTreeDto } from './dtos/create-question-tree.dto';
 
 @Controller('questions')
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
   @Post()
-  async create(@Body() createQuestionDto: CreateQuestionDto) {
-    return this.questionsService.create(createQuestionDto);
+  async create(@Body() createQuestionDto: CreateQuestionDto,@GetUser() currentUser:User) {
+    return this.questionsService.create(createQuestionDto,currentUser);
   }
 
   @Get()
   async findAll() {
     return this.questionsService.findAll();
+  }
+
+  @Post('tree')
+  async createQuestionsTree(@Body() questionTree: CreateQuestionTreeDto[]){
+    return this.questionsService.createQuestionsTree(questionTree);
   }
 
 
