@@ -6,6 +6,8 @@ import { BeforeApplicationShutdown } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Question } from './question.entity';
 import { CreateQuestionDto } from './dtos/create-question.dto';
+import { User } from '../users/user.entity';
+import { CreateQuestionTreeDto } from './dtos/create-question-tree.dto';
 
 
 @Injectable()
@@ -21,9 +23,8 @@ export class QuestionsService {
     await this.cacheManager.reset();
   }
 
-  async create(createQuestionDto: CreateQuestionDto): Promise<Question> {
+  async create(createQuestionDto: CreateQuestionDto,user :User) {
     let parentQuestion = null;
-
 
     if (createQuestionDto.parent_id) {
       parentQuestion = await this.repo.findOne({
@@ -35,7 +36,11 @@ export class QuestionsService {
       }
     }
 
-    const question = this.repo.create(createQuestionDto);
+    const question=this.repo.create({
+      ...createQuestionDto,
+     // created_by: { id: user.id } as User,
+      created_by: user
+    })
     const savedQuestion = await this.repo.save(question);
 
     await this.cacheManager.del('question_tree');
@@ -134,4 +139,37 @@ export class QuestionsService {
     await this.cacheManager.del('question_tree');
 
   }
+  async createQuestionsTree(questionTree: CreateQuestionTreeDto[], parentId: number | null = null){
+    // Use Promise.all to handle all creations concurrently
+    const createdQuestions = await Promise.all(
+      questionTree.map(async (questionData) => {
+        const { children, ...questionProperties } = questionData;
+
+        // Create and save the current question
+        const question = this.repo.create({
+          ...questionProperties,
+          parent_id: parentId,
+        });
+
+        const savedQuestion = await this.repo.save(question);
+
+        // Recursively handle child questions if any
+        const childQuestions = children?.length
+          ? await this.createQuestionsTree(children, savedQuestion.id)
+          : [];
+
+        return [savedQuestion, ...childQuestions]; // Combine parent and children
+      }),
+    );
+
+    // Flatten the array of results (since Promise.all returns nested arrays)
+    const flatCreatedQuestions = createdQuestions.flat();
+
+    // Clear cache to ensure the new tree is fetched next time
+    await this.cacheManager.del('question_tree');
+
+    return flatCreatedQuestions;
+  }
+
+
 }
