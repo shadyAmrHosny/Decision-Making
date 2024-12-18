@@ -25,6 +25,10 @@ export class ScammersService {
     return scammer;
   }
 
+  async find(name: string){
+    return this.repo.find({where: {name}});
+  }
+
   async update(id: number, updateScammerDto: CreateScammerDto): Promise<Scammer> {
     const scammer = await this.findOne(id);
     Object.assign(scammer, updateScammerDto);
