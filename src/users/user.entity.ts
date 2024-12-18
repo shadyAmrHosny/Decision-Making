@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { IsString } from 'class-validator';
 import { Question } from '../questions/question.entity';
+import { Project } from '../projects/project.entity';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
@@ -23,5 +24,8 @@ export class User {
   is_active: boolean;
 
   @OneToMany(() => Question, (question) => question.created_by)
-  questions: Question[];  // Array of questions created by the user
+  questions: Question[];
+
+  @OneToMany(()=> Project, (project)=> project.created_by)
+  projects: Project[];
 }
