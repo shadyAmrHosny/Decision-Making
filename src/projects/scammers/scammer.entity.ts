@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column,} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity()
 export class Scammer {
@@ -8,5 +8,12 @@ export class Scammer {
 
   @Column()
   name: string;
+
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 
 }
