@@ -1,4 +1,4 @@
-import { IsString, IsOptional, IsNumber, IsBoolean, Min,IsInt } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsBoolean, Min } from 'class-validator';
 
 export class CreateQuestionDto {
   @IsString()
@@ -24,6 +24,4 @@ export class CreateQuestionDto {
   @IsBoolean()
   active: boolean;
 
-  // @IsInt()
-  // created_by: number;  // temporary am going to implement current user decorator later to handle this
 }
