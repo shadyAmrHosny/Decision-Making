@@ -22,7 +22,7 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-# **Decision-Making Project**
+# **Decision-Making System**
 
 ![NestJS](https://img.shields.io/badge/NestJS-E0234E?style=for-the-badge&logo=nestjs&logoColor=white)
 ![TypeORM](https://img.shields.io/badge/TypeORM-F37626?style=for-the-badge&logo=typeorm&logoColor=white)
@@ -30,38 +30,62 @@
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![Passport](https://img.shields.io/badge/Passport-34E27A?style=for-the-badge&logo=passport&logoColor=white)
 
-The **Decision-Making Project** is a NestJS-based application designed to facilitate decision-making processes, manage users, projects, and hierarchical questions. It includes features like authentication, user management, project management, and question trees.
+The **Decision-Making System** is a robust and scalable NestJS-based application designed to facilitate decision-making processes, manage users, projects, and hierarchical questions. It leverages modern technologies like **JWT authentication**, **Passport.js**, and **TypeORM** to provide a secure and efficient backend solution.
 
 ---
 
 ## **Features**
-- **Authentication**: Secure JWT-based authentication and authorization using **Passport.js**.
-- **User Management**: Create, update, delete, and retrieve users.
-- **Project Management**: Manage projects with scammer detection and decision rates.
-- **Question Trees**: Create and manage hierarchical questions with parent-child relationships.
+### **1. Authentication & Authorization**
+- Secure JWT-based authentication using **Passport.js**.
+- Role-based access control (RBAC) for user permissions.
+- Login, logout, and user session management.
+
+### **2. User Management**
+- **User Registration**: Create new users with secure password hashing.
+- **Profile Management**: Update user details, including name, email, and password.
+- **Role-Based Access**: Admins can manage user roles and permissions.
+- **User Deletion**: Safely delete users and their associated data.
+
+### **3. Project Management**
+- **Project Creation**: Create and manage projects with details like client name, languages, and status.
+- **Scammer Detection**: Automatically detect and flag scammer clients.
+- **Decision Rates**: Track decision rates for projects.
+
+### **4. Question Trees**
+- **Hierarchical Questions**: Create and manage questions with parent-child relationships.
 - **Caching**: Optimized performance with caching for question trees.
-- **RESTful API**: Fully documented endpoints for easy integration.
+- **Bulk Creation**: Create multiple questions in a tree structure with a single API call.
+
+### **5. RESTful API**
+- Fully documented endpoints for easy integration with frontend or external systems.
+- Supports CRUD operations for users, projects, questions, and more.
+
+### **6. Caching**
+- Efficient caching mechanisms to reduce database load and improve performance.
 
 ---
 
 ## **Technologies Used**
-- **Backend**: NestJS
-- **Database**: MySQL (via TypeORM)
-- **Authentication**: JWT (JSON Web Tokens) with **Passport.js**
-- **Caching**: NestJS Cache Manager
-- **Validation**: Class Validator and Class Transformer
-- **Logging**: Morgan
+- **Backend Framework**: [NestJS](https://nestjs.com/)
+- **Database**: [MySQL](https://www.mysql.com/) (via [TypeORM](https://typeorm.io/))
+- **Authentication**: [JWT](https://jwt.io/) with [Passport.js](http://www.passportjs.org/)
+- **Caching**: [NestJS Cache Manager](https://docs.nestjs.com/techniques/caching)
+- **Validation**: [Class Validator](https://github.com/typestack/class-validator) and [Class Transformer](https://github.com/typestack/class-transformer)
+- **Logging**: [Morgan](https://github.com/expressjs/morgan)
 
 ---
 
 ## **Getting Started**
 
 ### **Prerequisites**
-- Node.js (v16 or higher)
-- MySQL (or any compatible database)
-- npm (Node Package Manager)
+Before running the project, ensure you have the following installed:
+- **Node.js** (v16 or higher)
+- **MySQL** (or any compatible database)
+- **npm** (Node Package Manager)
 
 ---
+
+
 
 ## Installation
 
