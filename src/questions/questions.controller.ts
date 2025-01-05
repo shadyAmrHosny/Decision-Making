@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, Query } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dtos/create-question.dto';
@@ -17,8 +17,8 @@ export class QuestionsController {
   }
 
   @Get()
-  async findAll() {
-    return this.questionsService.findAll();
+  async findAll(@Query('all') all: boolean) {
+    return this.questionsService.findAll(all);
   }
 
   @Post('tree')
