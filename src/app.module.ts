@@ -1,38 +1,46 @@
 import { Module , ValidationPipe, MiddlewareConsumer} from '@nestjs/common';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 //import * as cookieSession from 'cookie-session';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { User } from "./users/user.entity";
 import { QuestionsModule } from './questions/questions.module';
-import { Question } from './questions/question.entity';
 import { ProjectsModule } from './projects/projects.module';
-import { Scammer } from './projects/scammers/scammer.entity';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 
 const cookieSession = require('cookie-session');
 
 @Module({
-  imports: [TypeOrmModule.forRoot({
-    type: 'mysql',
-    host: 'localhost',
-    port: 3306,
-    username: 'root',
-    password: 'pass1234',
-    database: 'decision-making',
-   // entities: [User, Question,Scammer],
-    entities: [__dirname + '/**/*.entity{.ts,.js}'],
-    synchronize: true,
-  }),
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      //envFilePath: [`.env.${process.env.NODE_ENV}`, '.env'],
+      envFilePath: '.env'
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) =>({
+        type:'mysql',
+        host:configService.get<string>('DB_HOST'),
+        port: +configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: true
+      })
+    }),
     UsersModule,
     QuestionsModule,
     ProjectsModule,
     AuthModule],
   controllers: [AppController],
-  providers: [AppService,{
+  providers: [
+    AppService,
+    {
     provide: APP_PIPE,
     useValue: new ValidationPipe({
       whitelist: true
