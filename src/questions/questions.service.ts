@@ -49,8 +49,11 @@ export class QuestionsService {
   }
 
 
-  async findAll() {
-
+  async findAll(all: boolean) {
+    if (all){
+      const questions = await this.repo.find();
+        return this.buildTree(questions);
+    }
     const cachedTree = await this.cacheManager.get('question_tree');
 
     //Improves performance by reducing the need to repeatedly query the database for the question tree
@@ -59,7 +62,7 @@ export class QuestionsService {
       return cachedTree;
     }
 
-    const questions = await this.repo.find({ where: { active: true } });
+    const questions = await this.repo.find({ where: {active:true} });//{ active: true }
 
     const tree = this.buildTree(questions);
 
@@ -137,39 +140,40 @@ export class QuestionsService {
     await this.repo.remove(question);
 
     await this.cacheManager.del('question_tree');
-
   }
-  async createQuestionsTree(questionTree: CreateQuestionTreeDto[], parentId: number | null = null){
-    // Use Promise.all to handle all creations concurrently
-    const createdQuestions = await Promise.all(
+
+
+  // bulk creation for a tree of questions
+  async createQuestionsTree(
+    questionTree: CreateQuestionTreeDto[],
+    parentId: number | null = null,
+    accumulatedQuestions: Question[] = [],
+  ): Promise<Question[]> {
+    await Promise.all(
       questionTree.map(async (questionData) => {
         const { children, ...questionProperties } = questionData;
 
-        // Create and save the current question
         const question = this.repo.create({
           ...questionProperties,
           parent_id: parentId,
         });
 
         const savedQuestion = await this.repo.save(question);
+        console.log(`Saved Question:`, savedQuestion);
 
-        // Recursively handle child questions if any
-        const childQuestions = children?.length
-          ? await this.createQuestionsTree(children, savedQuestion.id)
-          : [];
+        accumulatedQuestions.push(savedQuestion);
 
-        return [savedQuestion, ...childQuestions]; // Combine parent and children
+        if (children?.length) {
+          await this.createQuestionsTree(children, savedQuestion.id, accumulatedQuestions);
+        }
       }),
     );
 
-    // Flatten the array of results (since Promise.all returns nested arrays)
-    const flatCreatedQuestions = createdQuestions.flat();
+   // console.log('Flattened Questions:', accumulatedQuestions);
 
-    // Clear cache to ensure the new tree is fetched next time
-    await this.cacheManager.del('question_tree');
-
-    return flatCreatedQuestions;
+    return this.buildTree(accumulatedQuestions);
   }
 
-
 }
+
+
