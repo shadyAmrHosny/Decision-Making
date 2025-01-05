@@ -118,4 +118,5 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+### You can view all the services endpoints  docs from [postman workspace](https://martian-satellite-271571.postman.co/workspace/diaries~9f1a8c53-170b-4ccd-81b0-fdaad1e0efdb/collection/28812009-f47e9000-fa3a-4c45-8c91-f20977a452f7?action=share&creator=28812009)
 
